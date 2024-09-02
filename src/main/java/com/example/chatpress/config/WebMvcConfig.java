@@ -10,11 +10,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // window
+        // window C:\chatpress\images
         registry.addResourceHandler("/attach/images/**")
-                .addResourceLocations("file:///C:/ChatPress/chatpress/images/");
+                .addResourceLocations("file:///C:/chatpress/images/");
         registry.addResourceHandler("/attach/images/icons/**")
-                .addResourceLocations("file:///C:/ChatPress/chatpress/images/icons/");
+                .addResourceLocations("file:///C:/chatpress/images/icons/");
 
         // linux
 //        registry.addResourceHandler("/attach/images/**")
