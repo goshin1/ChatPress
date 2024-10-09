@@ -6,6 +6,7 @@ import com.example.chatpress.dto.UserDto;
 import com.example.chatpress.entity.ConnectionEntity;
 import com.example.chatpress.entity.RoomEntity;
 import com.example.chatpress.entity.UserEntity;
+import com.example.chatpress.repository.ChatRepository;
 import com.example.chatpress.repository.ConnectionRepository;
 import com.example.chatpress.repository.RoomRepository;
 import com.example.chatpress.repository.UserRepository;
@@ -32,6 +33,9 @@ public class RoomService {
 
     @Autowired
     private ConnectionRepository connectionRepository;
+
+    @Autowired
+    private ChatRepository chatRepository;
 
     @Autowired
     private ChatService chatService;
@@ -104,6 +108,12 @@ public class RoomService {
         if(connection == null)
             return null;
         connectionRepository.delete(connection);
+
+        List<ConnectionEntity> existsConnections = connectionRepository.findAllByRoomId(room.getRoom_id());
+
+        if(existsConnections.isEmpty()){
+            chatRepository.deleteByRoomId(room.getRoom_id());
+        }
         return "Ok";
     }
 

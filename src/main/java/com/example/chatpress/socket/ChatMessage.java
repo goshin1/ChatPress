@@ -9,9 +9,9 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 public class ChatMessage {
-    private String chatRoomId;
-    private String message;
-    private String type;
-    private String user;
-    private String fileType;
+    private String chatRoomId; // 채팅방 고유 ID
+    private String message; // 보낼 메세지
+    private String type; // 소켓 타입
+    private String user; // 작성자
+    private String fileType; // 메세지 타입
 }

@@ -15,6 +15,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -37,9 +38,6 @@ public class LoginFilter  extends UsernamePasswordAuthenticationFilter {
         String username = obtainUsername(request);
         String password = obtainPassword(request);
 
-        System.out.println(request);
-        System.out.println(username);
-        System.out.println(password);
 
         //스프링 시큐리티에서 username과 password를 검증하기 위해서는 token에 담아야 함
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
@@ -59,22 +57,11 @@ public class LoginFilter  extends UsernamePasswordAuthenticationFilter {
         GrantedAuthority authority = iterator.next();
         String role = authority.getAuthority();
 
-//        기존에는 한개에 토큰만 생성했지만, 토큰 하나로 했을 경우 탈취되면 위험하기에 아래처럼 두가지로 나눠서
-//        String token = jwtUtil.createJwt(username, role, 60*60*10L);
-
 
         String access = jwtUtil.createJwt("access", username, role, 600000L);
         String refresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
 
-
-
-        // RFC 7235정의에 따라 헤더형태가 다음과 같아진다.
-        // response.addHeader("Authorization", "Bearer " + token);
-
-        // refresh 토큰을 관리하기 위한 저장 메서드
         addRefreshEntity(username, refresh, 86400000L);
-
-        // 응답 설정
         response.setHeader("access", access);
         response.addCookie(createCookie("refresh", refresh));
         response.setStatus(HttpStatus.OK.value());
@@ -93,7 +80,6 @@ public class LoginFilter  extends UsernamePasswordAuthenticationFilter {
     private Cookie createCookie(String key, String value){
         Cookie cookie = new Cookie(key, value);
         cookie.setMaxAge(24*60*60);
-        // 자바스크립트를 통한 토큰 탈취를 막기위해 설정한다. 이는 클라에서느 바꿀 수 없다
         cookie.setHttpOnly(true);
         return cookie;
     }

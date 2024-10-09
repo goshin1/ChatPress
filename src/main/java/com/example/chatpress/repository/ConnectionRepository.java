@@ -18,6 +18,5 @@ public interface ConnectionRepository extends JpaRepository<ConnectionEntity, Lo
     @Query(value = "select * from connection where conn_room_id = :roomId", nativeQuery = true)
     List<ConnectionEntity> findAllByRoomId(Long roomId);
 
-    @Query(value = "select * from connection where conn_user_id = :id and conn_room_id = :roomId", nativeQuery = true)
-    Optional<ConnectionEntity> findByUserAndRoom(Long id, Long roomId);
+
 }

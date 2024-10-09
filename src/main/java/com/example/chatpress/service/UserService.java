@@ -2,6 +2,7 @@ package com.example.chatpress.service;
 
 import com.example.chatpress.dto.*;
 import com.example.chatpress.entity.UserEntity;
+import com.example.chatpress.repository.ChatRepository;
 import com.example.chatpress.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,10 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
+    private ChatRepository chatRepository;
+
+
+    @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     //
     public UserDto login(LoginDto loginDto) {
@@ -30,19 +35,17 @@ public class UserService {
     @Transactional
     public String join(UserDto userDto, MultipartFile file) throws IOException {
         String projectPath = System.getProperty("user.dir") + "/images/icons/";
-        System.out.println("user dir : " + System.getProperty("user.dir"));
-        System.out.println("projectPath : "  + projectPath);
 
         UUID uuid = UUID.randomUUID();
         String filename = uuid + "_" + file.getOriginalFilename();
         File saveFile = new File(projectPath, filename);
         file.transferTo(saveFile);
-        UserEntity userCheck = userRepository.findByLogin(userDto.getUsername(), userDto.getPassword()).orElse(null);
+        UserEntity userCheck = userRepository.findByUserId(userDto.getUsername()).orElse(null);
 
         if(userCheck != null) return null;
 
         userDto.setUser_icon_name(filename);
-        userDto.setUser_icon_path("/attach/images/icons/" + filename); // 아이콘은 바로 받자마자 사용할 수 있게
+        userDto.setUser_icon_path("/attach/images/icons/" + filename);
         userDto.setRole("ROLE_USER");
         userDto.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
 
@@ -54,8 +57,7 @@ public class UserService {
     @Transactional
     public String edit(UserDto userDto, MultipartFile file, String userId) throws IOException {
         System.out.println("===== check =====");
-        System.out.println(file);
-        System.out.println(userId);
+        // 여기서는 변경이이루어진다
 
         if(file != null){
             String projectPath = System.getProperty("user.dir") + "/images/icons/";
@@ -69,8 +71,10 @@ public class UserService {
 
 
         UserEntity exists = userRepository.findByUsername(userId).orElse(null);
-        System.out.println(exists.toString());
+
         if(exists == null) return null;
+
+        chatRepository.updateChat(userDto.getUser_nickname(), exists.getUser_nickname());
 
         userDto.setRole("ROLE_USER");
         userDto.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
@@ -79,6 +83,12 @@ public class UserService {
         exists.patch(update);
 
         userRepository.save(exists);
+
+
+
+
+
+
         return "ok";
     }
 
@@ -96,6 +106,7 @@ public class UserService {
         if(userEntity == null)
             return null;
         ChatUserDto dto = new ChatUserDto();
+        dto.setId(userEntity.getId());
         dto.setUser_nickname(userEntity.getUser_nickname());
         dto.setUser_icon_path(userEntity.getUser_icon_path());
 
@@ -133,5 +144,16 @@ public class UserService {
         if(emailCheck != null && !userEntity.getUser_email().equals(userEditDto.getEmail())) return "email";
         return "ok";
 
+    }
+
+    public UserDto beforeEdit(String userId) {
+        UserEntity entity = userRepository.findByUserId(userId).orElse(null);
+        if(entity == null) return null;
+        UserDto dto = new UserDto();
+        dto.setUsername(userId);
+        dto.setUser_nickname(entity.getUser_nickname());
+        dto.setUser_email(entity.getUser_email());
+        dto.setUser_icon_path(entity.getUser_icon_path());
+        return dto;
     }
 }

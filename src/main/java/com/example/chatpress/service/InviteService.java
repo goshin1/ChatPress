@@ -36,11 +36,14 @@ public class InviteService {
 
     @Transactional
     public InviteDto invite(InviteDto dto) {
-        UserEntity user = userRepository.findByUsername(dto.getInvite_username()).orElse(null);
+        UserEntity user = userRepository.findByUserId(dto.getInvite_username()).orElse(null);
+
         if(user == null) return null;
         RoomEntity room = roomRepository.findByRoomToken(dto.getInvite_room_token()).orElse(null);
+
         if(room == null) return null;
-        ConnectionEntity connection = connectionRepository.findByUserAndRoom(user.getId(), room.getRoom_id()).orElse(null);
+        ConnectionEntity connection = connectionRepository.findByRoomAndUser(room.getRoom_id(), user.getId()).orElse(null);
+
         if(connection != null) return null;
         InviteEntity inviteEntity = inviteRepository.save(dto.toEntity());
         return inviteEntity.toDto();

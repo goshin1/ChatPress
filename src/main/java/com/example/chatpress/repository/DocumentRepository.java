@@ -14,4 +14,6 @@ public interface DocumentRepository extends JpaRepository<DocumentEntity, Long> 
 
     @Query(value = "select * from document where document_user = :user", nativeQuery = true)
     List<DocumentEntity> findAllByUser(String user);
+
+
 }

@@ -29,11 +29,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws JsonProcessingException {
         String payload = message.getPayload();
-        System.out.println("payload : "+payload);
         ChatMessage chatMessage = objectMapper.readValue(payload, ChatMessage.class);
-        System.out.println(chatMessage.toString());
         ChatRoom chatRoom = chatService.findRoomById(chatMessage.getChatRoomId());
-
         chatRoom.handleMessage(session, chatMessage,objectMapper);
     }
 

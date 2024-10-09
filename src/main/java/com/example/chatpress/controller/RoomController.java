@@ -40,12 +40,14 @@ public class RoomController {
         return roomService.createRoom(userId, name);
     }
 
+    //채팅방 찾기
     @GetMapping("/depart")
     public String departRoom(@RequestParam Long id){
 
         return roomService.findRoom(id);
     }
 
+    // 채팅방 코드
     @GetMapping("/code")
     public String inviteCode(@RequestParam String code){
         String userId = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -61,6 +63,7 @@ public class RoomController {
             ResponseEntity.status(HttpStatus.OK).body(dtos);
     }
 
+    // 채팅방 나가기
     @GetMapping("/exit/{code}")
     public ResponseEntity<RoomDto> exitRoom(@PathVariable String code){
         String userId = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -70,6 +73,7 @@ public class RoomController {
                 ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    // 채팅방 강퇴
     @GetMapping("forced")
     public String forcedExit(@RequestParam Long id, @RequestParam String code){
         return roomService.forcedExit(id, code);

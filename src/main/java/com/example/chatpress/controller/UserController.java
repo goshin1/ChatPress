@@ -33,14 +33,6 @@ public class UserController {
         return  userService.join(userDto, file);
     }
 
-
-    @PostMapping("/edit")
-    public String edit(UserDto userDto, MultipartFile file) throws IOException {
-        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
-        System.out.println(userDto.toString());
-        return  userService.edit(userDto, file, userId);
-    }
-
     // 로그인 유저 정보 조회
     @GetMapping("/info")
     public ChatUserDto loginInfo(){
@@ -55,6 +47,14 @@ public class UserController {
         return userService.searchUser(mail);
     }
 
+    // 정보 수정 페이지 진입 시 기본적인 정보(아이디, 이름, 이메일, 가능하면 아이콘)
+    @GetMapping("/beforeEdit")
+    public UserDto beforeEdit(){
+        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userService.beforeEdit(userId);
+    }
+
+
     // 회원 정보 변경 시 중복 아이디, 이메일 검사 및 기존 비밀번호 확인
     @PostMapping("/check")
     public String checkEdit(@RequestBody  UserEditDto userEditDto){
@@ -64,6 +64,13 @@ public class UserController {
 
     }
 
+    // 회원 정보 변경
+    @PostMapping("/edit")
+    public String edit(UserDto userDto, MultipartFile file) throws IOException {
+        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+        System.out.println(userDto.toString());
+        return  userService.edit(userDto, file, userId);
+    }
 
 
 

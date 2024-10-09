@@ -5,6 +5,8 @@ import com.example.chatpress.dto.DocumentSaveDto;
 import com.example.chatpress.service.DocumentService;
 import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,7 +38,7 @@ public class DocumentController {
         String userId = SecurityContextHolder.getContext().getAuthentication().getName();
         if(userId == null || userId.equals("")) return null;
         String check = documentService.saveDocument(dto.getInnerHTML(), userId, dto.getFileOrgName());
-        return "ok";
+        return check;
     }
 
     // 유저에 작성한 문서 목록
@@ -55,6 +57,16 @@ public class DocumentController {
         DocumentSaveDto loadDocument = documentService.load(userId, document);
 
         return loadDocument;
+    }
+
+    // 문서 삭제
+    @GetMapping("/delete")
+    public ResponseEntity<String> documentDelete(@RequestParam Long documentId){
+        String check = documentService.delete(documentId);
+
+        return check == null ?
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).build() :
+                ResponseEntity.status(HttpStatus.OK).build();
     }
 
 }

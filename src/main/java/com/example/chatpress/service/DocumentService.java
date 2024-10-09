@@ -3,7 +3,9 @@ package com.example.chatpress.service;
 import com.example.chatpress.dto.DocumentDto;
 import com.example.chatpress.dto.DocumentSaveDto;
 import com.example.chatpress.entity.DocumentEntity;
+import com.example.chatpress.entity.ShareEntity;
 import com.example.chatpress.repository.DocumentRepository;
+import com.example.chatpress.repository.ShareRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,9 @@ public class DocumentService {
 
     @Autowired
     private DocumentRepository documentRepository;
+
+    @Autowired
+    private ShareRepository shareRepository;
 
     public String newDocument(String innerHTML, String userId, String fileOrgName) throws IOException {
         DocumentEntity dentity = documentRepository.findByUserAndFileOrgName(userId, fileOrgName).orElse(null);
@@ -35,7 +40,7 @@ public class DocumentService {
         DocumentEntity entity = new DocumentEntity(null, projectPath + filename, userId, fileOrgName);
         DocumentEntity saveEntity = documentRepository.save(entity);
 
-        return saveEntity.getDocument_path();
+        return saveEntity.getDocument_id().toString();
     }
 
     public String saveDocument(String innerHTML, String userId, String fileOrgName) throws IOException {
@@ -46,7 +51,7 @@ public class DocumentService {
         writer.write(innerHTML);
         writer.flush();
         writer.close();
-        return entity.getDocument_path();
+        return entity.getDocument_id().toString();
     }
 
     public List<DocumentDto> getList(String userId) {
@@ -56,7 +61,6 @@ public class DocumentService {
     }
 
     public DocumentSaveDto load(String userId, String document) throws IOException {
-        // DB를 조사하여 엔티티를 찾고 엔티티를 통해 문서를 읽어 그 내용을 String에 담아서 전달
         DocumentEntity entity = documentRepository.findByUserAndFileOrgName(userId, document).orElse(null);
         if (entity == null) return null;
         File loadFile = new File(entity.getDocument_path());
@@ -69,5 +73,16 @@ public class DocumentService {
         reader.close();
         DocumentSaveDto dto = new DocumentSaveDto(entity.getDocument_id(), entity.getDocument_name(), innerHTML);
         return dto;
+    }
+
+    public String delete(Long documentId) {
+        ShareEntity share = shareRepository.findByDocumentId(documentId).orElse(null);
+        if(share == null) return null;
+        shareRepository.delete(share);
+
+        DocumentEntity document = documentRepository.findById(documentId).orElse(null);
+        if(document == null) return null;
+        documentRepository.delete(document);
+        return "ok";
     }
 }

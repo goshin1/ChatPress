@@ -1,15 +1,12 @@
 package com.example.chatpress.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.Setter;
 
 @Getter
-@ToString
-@NoArgsConstructor
-@AllArgsConstructor
+@Setter
 public class LoginDto {
+
     private String username;
     private String password;
 }
