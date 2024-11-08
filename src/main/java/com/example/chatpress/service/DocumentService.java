@@ -28,12 +28,12 @@ public class DocumentService {
         DocumentEntity dentity = documentRepository.findByUserAndFileOrgName(userId, fileOrgName).orElse(null);
         if(dentity != null) return "duplicate";
 
-        String projectPath = System.getProperty("user.dir") + "/document/";
+        String projectPath = "/root/ChatPress/document/";
         UUID uuid = UUID.randomUUID();
         String filename = uuid + "_" + fileOrgName;
         File saveFile = new File(projectPath, filename);
         saveFile.createNewFile();
-        BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile, true));
+        BufferedWriter writer =  new BufferedWriter(new OutputStreamWriter(new FileOutputStream(saveFile, true), "utf-8"));
         writer.write(innerHTML);
         writer.flush();
         writer.close();
@@ -47,7 +47,7 @@ public class DocumentService {
         DocumentEntity entity = documentRepository.findByUserAndFileOrgName(userId, fileOrgName).orElse(null);
         if(entity == null) return null;
         File writerFile = new File(entity.getDocument_path());
-        BufferedWriter writer = new BufferedWriter(new FileWriter(writerFile, false));
+        BufferedWriter writer =  new BufferedWriter(new OutputStreamWriter(new FileOutputStream(writerFile, true), "utf-8"));
         writer.write(innerHTML);
         writer.flush();
         writer.close();
@@ -64,7 +64,7 @@ public class DocumentService {
         DocumentEntity entity = documentRepository.findByUserAndFileOrgName(userId, document).orElse(null);
         if (entity == null) return null;
         File loadFile = new File(entity.getDocument_path());
-        BufferedReader reader = new BufferedReader(new FileReader(loadFile));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(loadFile), "utf-8"));
         String innerHTML = "";
         String str;
         while ((str = reader.readLine()) != null){

@@ -72,6 +72,12 @@ public class SecurityConfig {
                         .requestMatchers("/login", "/", "/join").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .requestMatchers("/reissue").permitAll()
+			.requestMatchers("/agree/**").permitAll()
+			.requestMatchers("/chat/**").authenticated()
+			.requestMatchers("/document/**").authenticated()
+			.requestMatchers("/invite/**").authenticated()
+			.requestMatchers("/message/**").authenticated()
+			.requestMatchers("/room/**").authenticated()
                         .anyRequest().permitAll());
 
         http
