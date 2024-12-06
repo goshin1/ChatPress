@@ -78,6 +78,7 @@
 |문서 비밀번호 설정|잠긴 문서 공유|
 |---|---|
 ![](introduce/document_password.png) | ![](introduce/document_share_password.png)
+
 문서를 처음 저장하는 경우 비밀번호 입력란이 나오며 여기서 입력한 비밀번호는 문서 공유 시 입력을 해야 해당 문서 내용을 확인할 수 있습니다.<br/>
 
 
