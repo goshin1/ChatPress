@@ -30,7 +30,11 @@ public class EmailService {
         try {
             message.setFrom(mail);
             message.setRecipients(MimeMessage.RecipientType.TO, mail);
+<<<<<<< HEAD
             message.setSubject("ChatPress Number Check");
+=======
+            message.setSubject("ChatPress Email Check");
+>>>>>>> ca28459b8f9723fdfdea98152ce3285c9006dda6
             String body = "";
             body += "<h3>" + "요청하신 인증 번호입니다." + "</h3>";
             body += "<h1>" + number + "</h1>";

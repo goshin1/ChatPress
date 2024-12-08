@@ -64,6 +64,7 @@ public class SecurityConfig {
         http.httpBasic((auth) -> auth.disable());
 
 
+<<<<<<< HEAD
         http.authorizeHttpRequests((auth) -> auth
                 .requestMatchers("/login", "/", "/join").permitAll()
                 .requestMatchers("/admin").hasRole("ADMIN")
@@ -76,6 +77,20 @@ public class SecurityConfig {
                 .requestMatchers("/room/**").authenticated()
                 .requestMatchers("/share/**").authenticated()
                 .anyRequest().permitAll());
+=======
+        http
+                .authorizeHttpRequests((auth) -> auth
+                        .requestMatchers("/login", "/", "/join").permitAll()
+                        .requestMatchers("/admin").hasRole("ADMIN")
+                        .requestMatchers("/reissue").permitAll()
+			.requestMatchers("/agree/**").permitAll()
+			.requestMatchers("/chat/**").authenticated()
+			.requestMatchers("/document/**").authenticated()
+			.requestMatchers("/invite/**").authenticated()
+			.requestMatchers("/message/**").authenticated()
+			.requestMatchers("/room/**").authenticated()
+                        .anyRequest().permitAll());
+>>>>>>> ca28459b8f9723fdfdea98152ce3285c9006dda6
 
         http.addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
         http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository), UsernamePasswordAuthenticationFilter.class);

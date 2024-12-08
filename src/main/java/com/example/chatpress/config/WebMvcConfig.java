@@ -12,10 +12,17 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
 
         // window C:\chatpress\images
+<<<<<<< HEAD
 //        registry.addResourceHandler("/attach/images/**")
 //                .addResourceLocations("file:///C:/chatpress/images/");
 //        registry.addResourceHandler("/attach/images/icons/**")
 //                .addResourceLocations("file:///C:/chatpress/images/icons/");
+=======
+        registry.addResourceHandler("/attach/images/**")
+                .addResourceLocations("file:////root/ChatPress/build/libs/images/");
+        registry.addResourceHandler("/attach/images/icons/**")
+                .addResourceLocations("file:////root/ChatPress/build/libs/images/icons/");
+>>>>>>> ca28459b8f9723fdfdea98152ce3285c9006dda6
 
 
         // linux
