@@ -33,7 +33,7 @@ public class DocumentService {
         String filename = uuid + "_" + fileOrgName;
         File saveFile = new File(projectPath, filename);
         saveFile.createNewFile();
-        BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile, true));
+        BufferedWriter writer =  new BufferedWriter(new OutputStreamWriter(new FileOutputStream(saveFile, true), "utf-8"));
         writer.write(innerHTML);
         writer.flush();
         writer.close();

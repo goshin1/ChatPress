@@ -55,36 +55,35 @@ public class SecurityConfig {
 
 
         //csrf disable
-        http
-                .csrf((auth) -> auth.disable());
+        http.csrf((auth) -> auth.disable());
 
         //From 로그인 방식 disable
-        http
-                .formLogin((auth) -> auth.disable());
+        http.formLogin((auth) -> auth.disable());
 
         //http basic 인증 방식 disable
-        http
-                .httpBasic((auth) -> auth.disable());
+        http.httpBasic((auth) -> auth.disable());
 
 
-        http
-                .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/", "/join").permitAll()
-                        .requestMatchers("/admin").hasRole("ADMIN")
-                        .requestMatchers("/reissue").permitAll()
-                        .anyRequest().permitAll());
+        http.authorizeHttpRequests((auth) -> auth
+                .requestMatchers("/login", "/", "/join").permitAll()
+                .requestMatchers("/admin").hasRole("ADMIN")
+                .requestMatchers("/reissue").permitAll()
+                .requestMatchers("/agree/**").authenticated()
+                .requestMatchers("/chat/**").authenticated()
+                .requestMatchers("/document/**").authenticated()
+                .requestMatchers("/invite/**").authenticated()
+                .requestMatchers("/message/**").authenticated()
+                .requestMatchers("/room/**").authenticated()
+                .requestMatchers("/share/**").authenticated()
+                .anyRequest().permitAll());
 
-        http
-                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
-        http
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository), UsernamePasswordAuthenticationFilter.class);
-        http
-                .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class);
+        http.addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
+        http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class);
 
 
         //세션 설정
-        http
-                .sessionManagement((session) -> session
+        http.sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();

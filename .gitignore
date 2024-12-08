@@ -28,7 +28,9 @@ out/
 !**/src/test/**/out/
 
 
-/src/main/front
+/src/main/front/node_modules
+/src/main/front/.env
+/src/main/front/build
 
 ### NetBeans ###
 /nbproject/private/
